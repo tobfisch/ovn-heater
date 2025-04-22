@@ -235,7 +235,7 @@ function install_ovn_fake_multinode() {
     [ -n "$RPM_OVN_HOST" ] && wget $RPM_OVN_HOST
   fi
 
-  podman images | grep -q 'ovn/ovn-multi-node' || rebuild_needed=1
+  sudo podman images | grep -q 'ovn/ovn-multi-node' || rebuild_needed=1
 
   if [ ${rebuild_needed} -eq 1 ]; then
     if [ -z "${OS_IMAGE_OVERRIDE}" ]; then
@@ -255,7 +255,7 @@ function install_ovn_fake_multinode() {
     # Build images locally.
     OS_IMAGE=$os_image OS_BASE=${OS_BASE} OVS_SRC_PATH=${rundir}/ovs OVN_SRC_PATH=${rundir}/ovn \
       EXTRA_OPTIMIZE=${EXTRA_OPTIMIZE} USE_OVSDB_ETCD=${USE_OVSDB_ETCD} \
-      RUNC_CMD=podman ./ovn_cluster.sh build
+      RUNC_CMD=sudo podman ./ovn_cluster.sh build
   fi
 
   popd
@@ -268,7 +268,7 @@ function install_ovn_tester() {
   # reference.
   cp ${ssh_key} .
   ssh_key_file=${rundir_name}/$(basename ${ssh_key})
-  podman build -t ovn/ovn-tester --build-arg SSH_KEY=${ssh_key_file} -f ${topdir}/Dockerfile ${topdir}
+  sudo podman build -t ovn/ovn-tester --build-arg SSH_KEY=${ssh_key_file} -f ${topdir}/Dockerfile ${topdir}
 }
 
 # Prepare OVS bridges and cleanup containers.
@@ -283,7 +283,7 @@ function pull_ovn_fake_multinode() {
 
   pushd ${rundir}/ovn-fake-multinode
   rm -f ovn-multi-node-image.tar
-  podman save --format oci-archive -o ovn-multi-node-image.tar \
+  sudo podman save --format oci-archive -o ovn-multi-node-image.tar \
     ovn/ovn-multi-node:latest
   ansible-playbook ${ovn_fmn_playbooks}/pull-fake-multinode.yml -i ${hosts_file}
   popd
@@ -293,7 +293,7 @@ function pull_ovn_tester() {
   echo "-- Saving the ovn/ovn-tester image and pulling it on the tester."
 
   rm -f ovn-tester-image.tar
-  podman save --format oci-archive -o ovn-tester-image.tar \
+  sudo podman save --format oci-archive -o ovn-tester-image.tar \
     ovn/ovn-tester:latest
   ansible-playbook ${ovn_fmn_playbooks}/pull-ovn-tester.yml -i ${hosts_file}
 }
@@ -480,7 +480,7 @@ function run_test() {
   fi
 
   tester_host=$(${ovn_fmn_get} ${phys_deployment} tester-node name)
-  if ! ssh root@${tester_host} podman exec \
+  if ! ssh root@${tester_host} sudo podman exec \
     ovn-tester python3 -u /ovn-tester/ovn_tester.py \
     /physical-deployment.yml /test-scenario.yml; then
     echo "-- Failed to run test. Check logs at: ${out_dir}/test-log"
