@@ -2,6 +2,7 @@
   hosts: all
   tasks:
     - name: Install required packages
+      become: true
       ansible.builtin.package:
         name:
           - git
@@ -16,6 +17,7 @@
     # so ignore_errors for packages that might not be there.
     # https://github.com/ansible/ansible/commit/6bcb494f8306
     - name: Install optional packages
+      become: true
       ansible.builtin.package:
         name:
           - openvswitch
@@ -24,6 +26,7 @@
       when: ansible_os_family == "RedHat"
 
     - name: Install required packages
+      become: true
       ansible.builtin.apt:
         name:
           - git
@@ -36,6 +39,7 @@
       when: ansible_os_family == "Debian"
 
     - name: Install container command
+      become: true
       ansible.builtin.package:
         name:
           - podman
