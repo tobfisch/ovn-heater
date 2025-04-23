@@ -255,7 +255,7 @@ function install_ovn_fake_multinode() {
     # Build images locally.
     OS_IMAGE=$os_image OS_BASE=${OS_BASE} OVS_SRC_PATH=${rundir}/ovs OVN_SRC_PATH=${rundir}/ovn \
       EXTRA_OPTIMIZE=${EXTRA_OPTIMIZE} USE_OVSDB_ETCD=${USE_OVSDB_ETCD} \
-      RUNC_CMD=sudo podman ./ovn_cluster.sh build
+      RUNC_CMD=podman sudo -E ./ovn_cluster.sh build
   fi
 
   popd
