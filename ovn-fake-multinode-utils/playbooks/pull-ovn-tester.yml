@@ -1,5 +1,6 @@
 - name: Install ovn-tester
   hosts: tester_hosts
+  become: true
   tasks:
   - name: Copy ovn-tester image
     ansible.posix.synchronize:

@@ -1,5 +1,6 @@
 - name: Bring up the tester
   hosts: tester_hosts
+  become: true
   tasks:
   - name: Start tester container
     ansible.builtin.shell: |
@@ -19,6 +20,7 @@
 
 - name: Compute central facts
   hosts: central_hosts, worker_hosts
+  become: true
   tasks:
   - name: Compute central facts (standalone)
     when: clustered_db == "no"
@@ -33,6 +35,7 @@
 
 - name: Bring up central nodes
   hosts: central_hosts
+  become: true
   tasks:
   - name: Compute central facts (standalone)
     when: clustered_db == "no"
@@ -79,6 +82,7 @@
 
 
 - name: Bring up worker nodes
+  become: true
   hosts: worker_hosts
   tasks:
   - name: Start worker containers
@@ -108,6 +112,7 @@
 
 - name: Start process monitoring
   hosts: all
+  become: true
   tasks:
   - name: Enumerate containers
     ansible.builtin.shell: |
@@ -128,6 +133,7 @@
 
 - name: Set up SSL remote for local ovsdb-server
   hosts: worker_hosts
+  become: true
   tasks:
   - name: Enumerate containers
     ansible.builtin.shell: |

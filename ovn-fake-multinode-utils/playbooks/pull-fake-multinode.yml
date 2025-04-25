@@ -1,5 +1,6 @@
 - name: Install ovn-fake-multinode
   hosts: all
+  become: true
   tasks:
   - name: Copy ovn-multi-node image
     ansible.posix.synchronize:

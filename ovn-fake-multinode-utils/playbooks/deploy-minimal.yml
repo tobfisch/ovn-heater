@@ -1,5 +1,6 @@
 - name: Prepare the setup
   hosts: all
+  become: true
   environment:
     RUNC_CMD: podman
   tasks:

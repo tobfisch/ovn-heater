@@ -1,5 +1,6 @@
 - name: Install dependencies
   hosts: all
+  become: true
   tasks:
     - name: Install required packages
       become: true

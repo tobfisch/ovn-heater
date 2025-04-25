@@ -1,5 +1,6 @@
 - name: Configure the tester
   hosts: tester_hosts
+  become: true
   tasks:
   - name: Copy physical deployment file to tester host
     ansible.builtin.copy:
